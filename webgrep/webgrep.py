@@ -78,7 +78,7 @@ def trim_with_ellipses(string, max_len):
 
 
 def web_grep(item, url):
-    soup = get_soup(url)
+    soup = url_to_soup(url)
     return list(_web_grep(item, soup))
 
 def _find_nodes(item, soup):
@@ -142,7 +142,7 @@ def get_href(elt):
 
 
 def write_steps(step_list, url, print_url):
-    get_soup(url)
+    url_to_soup(url)
     return list(_write_steps(step_list, soup, print_url))
 
 def _write_steps(step_list, soup, print_url):
@@ -183,15 +183,21 @@ def save_soup(url, soup, save_file):
     except RuntimeError:
         sys.stderr.write("WARNING: couldn't save website" + "\n")
         os.remove(save_file)
-        
 
-def get_soup(url):
+def html_to_soup(html):
+    try:
+        soup = BeautifulSoup(html, "lxml")
+    except:
+        soup = BeautifulSoup(html, "html.parser")
+    return soup
+    
+
+def url_to_soup(url):
     opener = urllib2.build_opener()
     opener.addheaders = [('User-agent', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0')]
     html = opener.open(url).read()
-    soup = BeautifulSoup(html, "lxml")
-    return soup
-
+    return html_to_soup(html)
+    
 def run(cmd):
     import subprocess
     pipes = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -213,7 +219,7 @@ page.open('"""+url+"""', function () {
         with os.fdopen(fd, "w") as f_in:
             f_in.write(print_url_js_code)
         html, _, _ = run("phantomjs " + f_path)
-        soup = BeautifulSoup(html, "lxml")
+        soup = html_to_soup(html)
         return soup
     finally:
         os.remove(f_path)
@@ -224,9 +230,9 @@ if __name__ == "__main__":
     if url and phantomjs:
         soup = get_phantomjs_soup(url)
     elif url:
-        soup = get_cached_soup(no_cache, url, get_soup)
+        soup = get_cached_soup(no_cache, url, url_to_soup)
     elif html_file:
-        soup = BeautifulSoup(open(html_file).read(), "lxml")
+        soup = html_to_soup(open(html_file).read())
     else:
         raise Exception("Couldn't find input url or html_file!")
 
