@@ -1,0 +1,17 @@
+webgrep is a simple tool for scraping websites from the command line
+
+Setup:
+> sudo easy_install webgrep 
+
+
+Example:
+Finding number of ratings for a book on goodreads
+
+Find the location of the 'Ratings' in the html by using the -g option:
+> webgrep.py -g 'Ratings' -u "http://www.goodreads.com/book/show/4588.Extremely_Loud_and_Incredibly_Close"
+match,location
+"267,896 Ratings"," 1,3,1,3,5,3,7,1,3,5,14,1,0"
+
+Now use that location value (" 1,3,1,3,5,3,7,1,3,5,14,1,0") as the -l argument to look in the same location on a different page
+> webgrep.py -l " 1,3,1,3,5,3,7,1,3,5,14,1,0" -u "http://www.goodreads.com/book/show/1618.The_Curious_Incident_of_the_Dog_in_the_Night_Time"
+"778,683 Ratings"

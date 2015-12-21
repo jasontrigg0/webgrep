@@ -11,18 +11,19 @@ import tempfile
 def readCL():
     parser = argparse.ArgumentParser()
     parser.add_argument("-g","--grep",help="item to grep from the website")
-    parser.add_argument("-s","--step_list",nargs="*",help="csv list of steps to follow. '-' is a wildcard. eg: 1,1,0,13,9,1,5,3,1,-,0")
+    parser.add_argument("-l","--location",nargs="*",help="location within the page to look. given as a csv list of steps. '-' is a wildcard. eg: 1,1,0,13,9,1,5,3,1,-,0")
     parser.add_argument("-u","--url",help="url to look in")
     parser.add_argument("-f","--html_file")
     parser.add_argument("-r","--relative",help="grep the -g arg position relative to -r arg instead of absolute position on the page. Useful if the desired section of the page remains the same but other layout varies.")
     parser.add_argument("--print_url",action="store_true",help="print link urls instead of link text")
-    parser.add_argument("--no_cache",help="By default webgrep caches the last webpage you downloaded for faster rerunning. Use no_cache to override.")
+    # parser.add_argument("--no_cache",help="By default webgrep caches the last webpage you downloaded for faster rerunning. Use no_cache to override.")
     parser.add_argument("--phantomjs",action="store_true",help="use phantomjs to parse the website for DOM elements that are loaded using javascript")
+    parser.add_argument("-v","--verbose",action="store_true")
     args = parser.parse_args()
-    if args.step_list:
-        args.step_list = [l.strip().split(",") for l in args.step_list]
-
-    return args.grep, args.url, args.html_file, args.step_list, args.relative, args.print_url, args.no_cache, args.phantomjs
+    if args.location:
+        step_list = [l.strip().split(",") for l in args.location]
+    args.no_cache = True
+    return args.grep, args.url, args.html_file, step_list, args.relative, args.print_url, args.no_cache, args.phantomjs, args.verbose
 
 def steps_to(node):
     ancestor_list = list(node.parents)[::-1] + [node] #starting from top of the tree
@@ -217,7 +218,7 @@ page.open('"""+url+"""', function () {
 
     
 if __name__ == "__main__":
-    grep, url, html_file, all_step_lists, relative, print_url, no_cache, phantomjs = readCL()
+    grep, url, html_file, all_step_lists, relative, print_url, no_cache, phantomjs, verbose = readCL()
     if url and phantomjs:
         soup = get_phantomjs_soup(url)
     elif url:
@@ -232,7 +233,10 @@ if __name__ == "__main__":
             relative_node = _find_nodes(relative, soup)[0]
         else:
             relative_node = None
-        csv_rows = list(_web_grep(grep, soup, relative_node))
+        csv_header = ["match","location"] + ["nearby"+str(i) for i in range(9)]
+        csv_rows = [csv_header] + list(_web_grep(grep, soup, relative_node))
+        if not verbose:
+            csv_rows = [r[:2] for r in csv_rows] #drop neighbor columns
         csv.writer(sys.stdout, lineterminator= '\n').writerows(csv_rows)
     elif all_step_lists:
         csv_rows = []
