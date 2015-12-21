@@ -22,6 +22,8 @@ def readCL():
     args = parser.parse_args()
     if args.location:
         step_list = [l.strip().split(",") for l in args.location]
+    else:
+        step_list = None
     args.no_cache = True
     return args.grep, args.url, args.html_file, step_list, args.relative, args.print_url, args.no_cache, args.phantomjs, args.verbose
 
