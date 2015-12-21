@@ -8,7 +8,7 @@ setup(
     author_email = "jasontrigg0@gmail.com",
     url = "https://github.com/jasontrigg0/webgrep",
     download_url = 'https://github.com/jasontrigg0/webgrep/tarball/0.0.2',
-    scripts=[],
+    scripts=["webgrep/webgrep.py"],
     install_requires=[
         "beautifulsoup4",
     ],
