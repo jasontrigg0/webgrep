@@ -4,6 +4,7 @@ Setup:
 > sudo easy_install webgrep 
 
 
+
 Example:
 Finding number of ratings for a book on goodreads
 
@@ -15,3 +16,37 @@ match,location
 Now use that location value (" 1,3,1,3,5,3,7,1,3,5,14,1,0") as the -l argument to look in the same location on a different page
 > webgrep.py -l " 1,3,1,3,5,3,7,1,3,5,14,1,0" -u "http://www.goodreads.com/book/show/1618.The_Curious_Incident_of_the_Dog_in_the_Night_Time"
 "778,683 Ratings"
+
+
+
+
+
+Example:
+Using "-" in a location value as a wildcard. Want to find all imdb titles on a page
+
+> webgrep.py  -g Shawshank -u "http://www.imdb.com/search/title?num_votes=50000,&release_date=1990,&sort=user_rating,desc&title_type=feature"
+match,location
+The Shawshank Redemption," 1,3,3,1,14,12,3,5,3,5,3,0"
+
+
+> webgrep.py  -g "The Dark Knight" -u "http://www.imdb.com/search/title?num_votes=50000,&release_date=1990,&sort=user_rating,desc&title_type=feature"
+match,location
+The Dark Knight," 1,3,3,1,14,12,3,5,5,5,3,0"
+The Dark Knight Rises," 1,3,3,1,14,12,3,5,69,5,3,0"
+
+
+> webgrep.py -l " 1,3,3,1,14,12,3,5,-,5,3,0" -u "http://www.imdb.com/search/title?num_votes=50000,&release_date=1990,&sort=user_rating,desc&title_type=feature"
+The Shawshank Redemption
+The Dark Knight
+Schindler's List
+Pulp Fiction
+The Lord of the Rings: The Return of the King
+...
+
+
+
+
+
+
+Common errors:
+Quote the -u argument in bash or else '&' may be read as running the process in the background instead of part of the url
