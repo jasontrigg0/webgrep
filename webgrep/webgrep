@@ -13,13 +13,13 @@ def readCL():
     parser = argparse.ArgumentParser()
     parser.add_argument("-g","--grep",help="item to grep from the website")
     parser.add_argument("-l","--location",nargs="*",help="location within the page to look. given as a path through the DOM tree. The path is a csv list of steps where '-' is a wildcard. eg: 1,1,0,13,9,1,5,3,1,-,0")
-    parser.add_argument("-u","--url",help="url to look in")
-    parser.add_argument("-f","--html_file")
-    parser.add_argument("-r","--relative",help="grep the -g arg position relative to -r arg instead of absolute position on the page. Useful if the desired section of the page remains the same but other layout varies.")
-    parser.add_argument("--print_url",action="store_true",help="print link urls instead of link text")
+    parser.add_argument("-u", "--url", help="url to look in")
+    parser.add_argument("-f", "--html_file")
+    parser.add_argument("-r", "--relative", help="grep the -g arg position relative to -r arg instead of absolute position on the page. Useful if the desired section of the page remains the same but other layout varies.")
+    parser.add_argument("--print_url", action="store_true", help="print link urls instead of link text")
     # parser.add_argument("--no_cache",help="By default webgrep caches the last webpage you downloaded for faster rerunning. Use no_cache to override.")
-    parser.add_argument("--phantomjs",action="store_true",help="use phantomjs to parse the website for DOM elements that are loaded using javascript")
-    parser.add_argument("-v","--verbose",action="store_true")
+    parser.add_argument("--phantomjs", action="store_true", help="use phantomjs to parse the website for DOM elements that are loaded using javascript")
+    parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args()
     if args.location:
         path = [l.strip().split(",") for l in args.location]
@@ -61,7 +61,8 @@ def _follow_path(node, path, nested=True):
     if not path:
         yield node
     elif path[0] == "-":
-        if not hasattr(node,"contents"): return
+        if not hasattr(node,"contents"):
+            return
         for n1 in node.contents:
             #don't encase the last '-' in path because those are single items
             if nested and "-" in path[1:]:
@@ -293,7 +294,7 @@ def main_print_path(all_paths, soup, relative, print_url):
             path_relative = list(_web_grep(relative, soup))[0][1].split(',')
             path = path_relative + path
         csv_rows += _write_path(path, soup, print_url)
-    csv.writer(sys.stdout, lineterminator= '\n').writerows(csv_rows)
+    csv.writer(sys.stdout, lineterminator = '\n').writerows(csv_rows)
 
 if __name__ == "__main__":
     grep, url, html_file, all_paths, relative, print_url, no_cache, phantomjs, verbose = readCL()
@@ -303,4 +304,3 @@ if __name__ == "__main__":
         main_grep(grep, soup, relative, verbose)
     elif all_paths:
         main_print_path(all_paths, soup, relative, print_url)
-
