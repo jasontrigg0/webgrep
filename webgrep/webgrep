@@ -15,7 +15,7 @@ def readCL():
     parser.add_argument("-l","--location",nargs="*",help="location within the page to look. given as a path through the DOM tree. The path is a csv list of steps where '-' is a wildcard. eg: 1,1,0,13,9,1,5,3,1,-,0")
     parser.add_argument("-u", "--url", help="url to look in")
     parser.add_argument("-f", "--html_file")
-    parser.add_argument("-r", "--relative", help="grep the -g arg position relative to -r arg instead of absolute position on the page. Useful if the desired section of the page remains the same but other layout varies.")
+    parser.add_argument("-r", "--relative", help="text field to search relative to. Example: webgrep -r \"Size + Fit\" -g 'Model' returns a relative location. Then use that as in: webgrep -r \"Size + Fit\" -l \" -1,-1,3,-,0\"")
     parser.add_argument("--print_url", action="store_true", help="print link urls instead of link text")
     # parser.add_argument("--no_cache",help="By default webgrep caches the last webpage you downloaded for faster rerunning. Use no_cache to override.")
     parser.add_argument("--phantomjs", action="store_true", help="use phantomjs to parse the website for DOM elements that are loaded using javascript")
