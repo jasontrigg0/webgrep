@@ -194,7 +194,7 @@ def _write_path(path, soup, print_url):
     for elt in l:
         if not isinstance(elt,list):
             elt = [elt]
-        r = [node_to_str(n, print_url=print_url) for n in elt]
+        r = [node_to_str(n, print_url=print_url, max_length=None) for n in elt]
         yield r
 
 def get_cached_soup(no_cache, print_url, get_soup_fn):
