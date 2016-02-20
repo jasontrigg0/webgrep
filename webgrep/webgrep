@@ -99,8 +99,9 @@ def web_grep(item, url):
     return list(_web_grep(item, soup))
 
 def _find_nodes(item, soup):
-    nodes1 = soup.find_all(text=re.compile(item))
-    nodes2 = soup.find_all(html=re.compile(item))
+    regex = re.escape(item)
+    nodes1 = soup.find_all(text=re.compile(regex))
+    nodes2 = soup.find_all(html=re.compile(regex))
     nodes = nodes1 + nodes2
     nodes = [find_proper_node(n) for n in nodes]
     return nodes
