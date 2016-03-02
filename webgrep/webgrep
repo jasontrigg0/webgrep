@@ -8,6 +8,7 @@ import sys
 import os.path
 import tempfile
 import itertools
+import distutils.spawn
 
 def readCL():
     parser = argparse.ArgumentParser()
@@ -266,6 +267,8 @@ page.open('"""+url+"""', function () {
     phantom.exit();
 });
 """
+    if not distutils.spawn.find_executable("phantomjs"):
+        raise Exception("ERROR! Can't find phantomjs. See http://phantomjs.org/build.html")
     print_url_js_file = "/tmp/print_html.js"
     fd, f_path = tempfile.mkstemp()
     try:
@@ -274,8 +277,11 @@ page.open('"""+url+"""', function () {
         html, _, _ = run("phantomjs " + f_path)
         soup = html_to_soup(html)
         return soup
-    finally:
+    except:
         os.remove(f_path)
+        raise
+    
+    os.remove(f_path)
 
 def get_soup(url, phantomjs, html_file, no_cache):
     if url and phantomjs:
@@ -295,6 +301,12 @@ def find_css(css, soup):
             search_nodes = soup.find_all(css_tag, attrs={"class":css_class})
         else:
             search_nodes = soup.find_all(attrs={"class",css_class})
+    elif "#" in css:
+        css_tag, css_id = css.split("#")
+        if css_tag:
+            search_nodes = soup.findall(css_tag, attrs={"id":css_id})
+        else:
+            search_nodes = soup.find_all(attrs={"id":css_id})
     return search_nodes[0]
 
 def main_grep(grep, soup, relative, verbose):
