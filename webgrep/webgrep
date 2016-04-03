@@ -7,7 +7,7 @@ import itertools
 
 from webgrep.utils import get_soup, select
 from webgrep.grep import main_grep
-from webgrep.lookup import main_print_path
+from webgrep.lookup import main_follow_path
 
 
 def readCL():
@@ -57,7 +57,7 @@ def main(css, grep, url, html_file, all_paths, relative, print_url, no_cache, ph
         csv_rows = main_grep(grep, soup, relative, verbose)
         csv.writer(sys.stdout, lineterminator= '\n').writerows(csv_rows)
     elif all_paths:
-        csv_rows = main_print_path(all_paths, soup, relative, print_url, return_soup = print_css)
+        csv_rows = main_follow_path(all_paths, soup, relative, print_url, return_soup = print_css)
         if print_css:
             print csv_rows
         else:

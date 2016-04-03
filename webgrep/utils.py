@@ -20,6 +20,8 @@ def _follow_path_iter(node, path):
     if not path or not path[0]:
         if isinstance(node, bs4.element.Tag):
             yield node
+        elif node_to_str(node): #keep nodes with non-empty text
+            yield node
         else:
             return
     elif path[0] == "-":

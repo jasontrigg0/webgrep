@@ -17,7 +17,7 @@ def lookup(path, target, css = None, phantomjs = False, print_url = False, retur
     path = path.strip().split(",")
     if css:
         soup = select(css, soup)[0]
-    csv_rows = main_print_path([path], soup, relative = False, print_url=print_url, return_soup=return_soup)
+    csv_rows = main_follow_path([path], soup, relative = False, print_url=print_url, return_soup=return_soup)
     wildcard_cnt = len([e for e in path if e == "-"])
     if wildcard_cnt == 0:
         return csv_rows[0][0]
@@ -26,7 +26,7 @@ def lookup(path, target, css = None, phantomjs = False, print_url = False, retur
     else:
         return csv_rows
     
-def main_print_path(all_paths, soup, relative, print_url, return_soup = False):
+def main_follow_path(all_paths, soup, relative, print_url, return_soup = False):
     csv_rows = []
     for path in all_paths:
         if path.count("-") > 2:
