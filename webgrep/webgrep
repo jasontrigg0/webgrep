@@ -61,13 +61,19 @@ def main(css, grep, url, html_file, all_paths, relative, print_url, no_cache, ph
         if print_css:
             print csv_rows
         else:
-            csv.writer(sys.stdout, lineterminator = '\n').writerows(csv_rows)
+            csv.writer(sys.stdout, lineterminator = '\n').writerows([[format_field(f) for f in row] for row in csv_rows])
     elif css:
         # soup = soup.find_all(text=True)
         soup = soup_text(soup)
-        csv.writer(sys.stdout, lineterminator="\n").writerows([[i.encode("utf-8",errors="ignore").replace("\n","").replace("\r","") for i in soup]])
+        write_soup(soup)
+        
+def write_soup(s):
+    csv.writer(sys.stdout, lineterminator="\n").writerows([[format_field(f) for i in s]])
 
-
+def format_field(f):
+    return f.encode("utf-8").replace("\n","").replace("\r","")
+    
+        
         
 if __name__ == "__main__":
     css, grep, url, html_file, all_paths, relative, print_url, no_cache, phantomjs, print_css, verbose = readCL()

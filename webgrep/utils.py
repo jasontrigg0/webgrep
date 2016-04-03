@@ -273,9 +273,9 @@ def _save_soup(url, soup, save_file):
 
 def _html_to_soup(html):
     try:
-        soup = bs4.BeautifulSoup(html, "lxml")
+        soup = bs4.BeautifulSoup(html.decode("utf-8","ignore"), "lxml")
     except:
-        soup = bs4.BeautifulSoup(html, "html.parser")
+        soup = bs4.BeautifulSoup(html.decode("utf-8","ignore"), "html.parser")
     return soup
 
 def _url_to_soup(url):
@@ -308,11 +308,11 @@ def node_to_str(node, print_url=False, max_length=50):
     if getattr(node, "name", "") in ["td"] and len(node.contents) == 1:
         return node_to_str(node.contents[0], print_url=print_url, max_length=max_length)
     if "href" in getattr(node,"attrs",[]) and print_url:
-        s = unicode(node["href"]).encode("utf-8")
+        s = (node["href"])
     elif hasattr(node,"text"):
-        s = unicode(node.text).encode("utf-8")
+        s = (node.text)
     else:
-        s = unicode(node).encode("utf-8")
+        s = (node)
     s = s.replace("\n","")
     if max_length:
         return _trim_with_ellipses(s,max_length)
