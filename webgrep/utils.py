@@ -94,7 +94,7 @@ def _select_one_level(relation, sub_sel, target_nodes):
     return output_nodes
         
 
-def select(css_selector, target):
+def select(css_selector, target, phantomjs = False):
     """Input: jquery-style selector string
        eg: "head.big-class"
            "#wrapper3"
@@ -103,7 +103,7 @@ def select(css_selector, target):
     global STATE
     STATE = _get_desc(target) + [css_selector]
     if isinstance(target,str):
-        soup = get_soup(target)
+        soup = get_soup(target, phantomjs=phantomjs)
     elif isinstance(target,bs4.BeautifulSoup) or isinstance(target,bs4.element.Tag):
         soup = target
     else:
@@ -272,10 +272,12 @@ def _save_soup(url, soup, save_file):
         os.remove(save_file)
 
 def _html_to_soup(html):
+    if isinstance(html, str):
+        html = html.decode("utf-8","ignore")
     try:
-        soup = bs4.BeautifulSoup(html.decode("utf-8","ignore"), "lxml")
+        soup = bs4.BeautifulSoup(html, "lxml")
     except:
-        soup = bs4.BeautifulSoup(html.decode("utf-8","ignore"), "html.parser")
+        soup = bs4.BeautifulSoup(html, "html.parser")
     return soup
 
 def _url_to_soup(url):

@@ -68,7 +68,7 @@ def main(css, grep, url, html_file, all_paths, relative, print_url, no_cache, ph
         write_soup(soup)
         
 def write_soup(s):
-    csv.writer(sys.stdout, lineterminator="\n").writerows([[format_field(f) for i in s]])
+    csv.writer(sys.stdout, lineterminator="\n").writerows([[format_field(i) for i in s]])
 
 def format_field(f):
     return f.encode("utf-8").replace("\n","").replace("\r","")
