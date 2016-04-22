@@ -11,6 +11,7 @@ setup(
     scripts=["webgrep/webgrep"],
     install_requires=[
         "beautifulsoup4",
+        "requests",
     ],
     keywords = [],
     classifiers = [],
