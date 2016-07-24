@@ -132,14 +132,6 @@ def _get_desc(target):
         return getattr(target,"desc",[])
     
 
-#jtrigg@20160308 old version of select that returned a div that contained the list of matches
-# def find_css(selector, soup):
-#     output_parent = soup.new_tag("div")
-#     search_nodes = css_selector(selector, soup)
-#     for n in search_nodes:
-#         output_parent.append(n)
-#     return output_parent
-
 def get_soup(url, phantomjs = False, html_file = False, no_cache = True):
     STATE = [url]
     if url and phantomjs:
